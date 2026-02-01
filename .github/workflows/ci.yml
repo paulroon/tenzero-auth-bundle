@@ -32,7 +32,7 @@ jobs:
               uses: ramsey/composer-install@v3
               with:
                   dependency-versions: ${{ matrix.deps }}
-                  composer-options: --prefer-dist
+                  composer-options: --prefer-dist --no-audit
               env:
                   SYMFONY_REQUIRE: ${{ matrix.symfony }}
 
