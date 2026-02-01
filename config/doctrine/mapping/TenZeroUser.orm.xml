@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                  http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <mapped-superclass name="Happycode\TenZeroAuth\Model\TenZeroUser">
+        <field name="password" column="password" type="string" />
+        <field name="roles" column="roles" type="json" />
+        <field name="resetPasswordTokenHash" column="reset_password_token_hash" type="string" length="255" nullable="true" />
+        <field name="resetPasswordExpiresAt" column="reset_password_expires_at" type="datetime_immutable" nullable="true" />
+    </mapped-superclass>
+</doctrine-mapping>

@@ -1,0 +1,98 @@
+{% extends '@TenZeroAuth/tenzero_base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="w-full max-w-sm">
+        <div class="flex flex-col items-center justify-center mb-4">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900">
+                Create Account
+            </h1>
+        </div>
+        <form class="mt-8 space-y-6" action="{{ path('tenzero_auth_register') }}" method="POST">
+            <div class="space-y-4">
+
+                {% include '@TenZeroAuth/security/_errors.html.twig' with {
+                    errors: errors|default([]),
+                    flashes: app is defined ? app.flashes('error') : []
+                } only %}
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
+
+                <div>
+                    <label for="{{ userField }}" class="sr-only">
+                        {{ userField|capitalize }}
+                    </label>
+                    {% if fieldErrors[userField] is defined %}<div class="text-red-500">{{ fieldErrors[userField] }}</div>{% endif %}
+                    <input
+                        id="{{ userField }}"
+                        name="{{ userField }}"
+                        type="{% if userField is same as('email') %}email{% else %}text{% endif %}"
+                        required
+                        class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[var(--primary)] sm:text-sm sm:leading-6"
+                        placeholder="{{ userField|capitalize }}"
+                    />
+                </div>
+
+                {% for alias, field in otherFields %}
+                <div>
+                    <label for="{{ field }}" class="sr-only">
+                        {{ alias|capitalize }}
+                    </label>
+                    {% if fieldErrors[field] is defined %}<div class="text-red-500">{{ fieldErrors[field] }}</div>{% endif %}
+                    <input
+                        id="{{ field }}"
+                        name="{{ field }}"
+                        type="text"
+                        required
+                        class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[var(--primary)] sm:text-sm sm:leading-6"
+                        placeholder="{{ alias|capitalize }}"
+                    />
+                </div>
+                {% endfor %}
+                <div>
+                    <label for="password" class="sr-only">
+                        Password
+                    </label>
+                    {% if fieldErrors['password'] is defined %}<div class="text-red-500">{{ fieldErrors['password'] }}</div>{% endif %}
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                        class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[var(--primary)] sm:text-sm sm:leading-6"
+                        placeholder="Password"
+                    />
+                </div>
+                <div>
+                    <label for="confirm-password" class="sr-only">
+                        Confirm Password
+                    </label>
+                    {% if fieldErrors['confirm-password'] is defined %}<div class="text-red-500">{{ fieldErrors['confirm-password'] }}</div>{% endif %}
+                    <input
+                        id="confirm-password"
+                        name="confirm-password"
+                        type="password"
+                        required
+                        class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[var(--primary)] sm:text-sm sm:leading-6"
+                        placeholder="Confirm Password"
+                    />
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="tz-auth-btn">Create Account</button>
+            </div>
+        </form>
+
+        <p class="mt-4 text-center text-sm text-gray-600">
+            Already have an account?
+            <a
+                href="{{ path('tenzero_auth_login') }}"
+                class="font-medium text-[var(--primary)] hover:text-[var(--primary-hover)]"
+            >
+            Log In
+            </a>
+        </p>
+    </div>
+{% endblock %}

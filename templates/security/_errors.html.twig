@@ -1,0 +1,23 @@
+{% set errorMessages = [] %}
+
+{% if errors is defined %}
+    {% if errors is iterable %}
+        {% set errorMessages = errorMessages|merge(errors) %}
+    {% elseif errors %}
+        {% set errorMessages = errorMessages|merge([errors]) %}
+    {% endif %}
+{% endif %}
+
+{% if flashes is defined and flashes %}
+    {% set errorMessages = errorMessages|merge(flashes) %}
+{% endif %}
+
+{% if errorMessages|length > 0 %}
+    <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <ul class="list-disc space-y-1 pl-5">
+            {% for error in errorMessages %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

@@ -1,0 +1,93 @@
+{% extends '@TenZeroAuth/tenzero_base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <div class="w-full max-w-sm">
+        <div class="flex flex-col items-center justify-center mb-4">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900">
+                Log In
+            </h1>
+        </div>
+
+        <form action="{{ path('tenzero_auth_login') }}" method="post" class="space-y-4">
+
+            {% include '@TenZeroAuth/security/_errors.html.twig' with {
+                errors: errors|default([]),
+                flashes: app is defined ? app.flashes('error') : []
+            } only %}
+            {% if app is defined %}
+                {% set successMessages = app.flashes('success') %}
+            {% endif %}
+            {% if successMessages is defined and successMessages|length > 0 %}
+                <div class="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
+                    <ul class="list-disc space-y-1 pl-5">
+                        {% for message in successMessages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <div>
+                <label
+                    for="{{ userField }}"
+                    class="block text-sm font-medium text-gray-700"
+                >
+                    {{ userField|capitalize }}
+                </label>
+                <input
+                    type="{% if userField is same as('email') %}email{% else %}text{% endif %}"
+                    id="{{ userField }}"
+                    name="{{ userField }}"
+                    value="{{ last_username|default('') }}"
+                    required
+                    class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[var(--primary)] sm:text-sm sm:leading-6"
+                />
+            </div>
+            <div>
+                <label
+                    for="password"
+                    class="block text-sm font-medium text-gray-700"
+                >
+                    Password
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                required
+                class="block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[var(--primary)] sm:text-sm sm:leading-6"
+                />
+            </div>
+
+            <div class="flex items-center justify-end">
+                <div class="text-sm">
+                    <a
+                        href="{{ path('tenzero_auth_forgot_password') }}"
+                        class="font-medium text-[var(--primary)] hover:text-[var(--primary-hover)]"
+                    >
+                    Forgot your password?
+                    </a>
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="tz-auth-btn">Log in</button>
+            </div>
+        </form>
+
+        {% if tenzero_auth_enable_register %}
+            <p class="mt-4 text-center text-sm text-gray-600">
+                Don't have an account?
+                <a
+                    href="{{ path('tenzero_auth_register') }}"
+                    class="font-medium text-[var(--primary)] hover:text-[var(--primary-hover)]"
+                >
+                Register here
+                </a>
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

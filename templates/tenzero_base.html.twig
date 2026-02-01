@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}TenZero Auth{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ asset('tenzero-auth/styles.css') }}">
+    {% block stylesheets %}{% endblock %}
+  </head>
+  <body class="{{ tenzero_auth_theme|default('tz-theme-default') }}">
+      <div class="min-h-screen flex">
+          <!-- Left side - Form -->
+          <div class="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
+              {% block body %}{% endblock %}
+          </div>
+
+          <!-- Right side - Branding -->
+          <div
+              class="hidden lg:flex flex-1 flex-col justify-center px-4 sm:px-6 lg:px-8"
+              style="background-color: var(--primary);"
+          >
+              <div class="max-w-md mx-auto">
+                  <h2
+                      class="text-4xl font-bold text-white mb-4"
+                      style="color: #ffffff; font-weight: bold;"
+                  >
+                      {{ tenzero_auth_app_name|default('TenZero') }}
+                  </h2>
+                  <p class="text-xl" style="color: #ffffff;">
+                      {{ tenzero_auth_app_description|default('A comprehensive business management platform designed to streamline your operations and boost productivity.') }}
+                  </p>
+              </div>
+          </div>
+      </div>
+    {% block javascripts %}{% endblock %}
+  </body>
+  </html>
