@@ -34,14 +34,13 @@ final class TenZeroAuthBundle extends AbstractBundle
                 ->stringNode('user_class')
                     ->info('The class that will be used to authenticate user.')
                     ->example('\App\Entity\User')
-                    ->isRequired()
-                    ->cannotBeEmpty()
+                    ->defaultNull()
                     ->validate()
-                        ->ifTrue(fn ($v) => !class_exists($v))
+                        ->ifTrue(fn ($v) => is_string($v) && '' !== $v && !class_exists($v))
                         ->thenInvalid('Configured user_class "%s" was not found or could not be autoloaded.')
                     ->end()
                     ->validate()
-                        ->ifTrue(fn ($v) => !is_a($v, TenZeroUser::class, true))
+                        ->ifTrue(fn ($v) => is_string($v) && '' !== $v && !is_a($v, TenZeroUser::class, true))
                         ->thenInvalid('Configured user_class "%s" must extend Happycode\\TenZeroAuth\\Model\\TenZeroUser.')
                     ->end() // end user_class validate block
                 ->end() // end user_class block
@@ -50,8 +49,7 @@ final class TenZeroAuthBundle extends AbstractBundle
                 ->stringNode('user_field')
                     ->info('The field that will be used to identify the user.')
                     ->example('username | email')
-                    ->isRequired()
-                    ->cannotBeEmpty()
+                    ->defaultNull()
                 ->end() // end user_field block
 
                 // theme
@@ -128,19 +126,24 @@ final class TenZeroAuthBundle extends AbstractBundle
 
             ->validate() // Validate the whole block
                 ->ifTrue(static function (array $v): bool {
-                    if (!isset($v['user_class'], $v['user_field'])) {
+                    $userClass = $v['user_class'] ?? null;
+                    $userField = $v['user_field'] ?? null;
+                    if (!is_string($userClass) || '' === $userClass) {
                         return false;
                     }
-                    if (!is_string($v['user_class']) || !class_exists($v['user_class'])) {
+                    if (!is_string($userField) || '' === $userField) {
                         return false;
                     }
-                    if (!is_a($v['user_class'], TenZeroUser::class, true)) {
+                    if (!class_exists($userClass)) {
                         return false;
                     }
-                    $getter = 'get'.ucfirst($v['user_field']);
+                    if (!is_a($userClass, TenZeroUser::class, true)) {
+                        return false;
+                    }
+                    $getter = 'get'.ucfirst($userField);
 
-                    return !method_exists($v['user_class'], $getter)
-                        && !\property_exists($v['user_class'], $v['user_field']);
+                    return !method_exists($userClass, $getter)
+                        && !\property_exists($userClass, $userField);
                 })
                 ->then(static function (array $v): array {
                     $userClass = (string) ($v['user_class'] ?? '');
@@ -153,14 +156,15 @@ final class TenZeroAuthBundle extends AbstractBundle
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        // Use PHP-based service configuration to avoid requiring YAML in host apps
-        if (isset($config['user_class'])) {
-            $builder->setParameter('happycode_tenzero_auth.user_class', $config['user_class']);
+        $userClass = $config['user_class'] ?? null;
+        $userField = $config['user_field'] ?? null;
+        if (!is_string($userClass) || '' === $userClass || !is_string($userField) || '' === $userField) {
+            return;
         }
 
-        if (isset($config['user_field'])) {
-            $builder->setParameter('happycode_tenzero_auth.user_field', $config['user_field']);
-        }
+        // Use PHP-based service configuration to avoid requiring YAML in host apps
+        $builder->setParameter('happycode_tenzero_auth.user_class', $userClass);
+        $builder->setParameter('happycode_tenzero_auth.user_field', $userField);
         if (isset($config['theme'])) {
             $builder->setParameter('happycode_tenzero_auth.theme', $config['theme']);
         }
@@ -202,6 +206,9 @@ final class TenZeroAuthBundle extends AbstractBundle
         }
         $userClass = $bundleConfig['user_class'] ?? null;
         $userField = $bundleConfig['user_field'] ?? null;
+        if (!is_string($userClass) || '' === $userClass || !is_string($userField) || '' === $userField) {
+            return;
+        }
         $theme = $bundleConfig['theme'] ?? 'tz-theme-default';
         $enableRegister = $bundleConfig['enable_register'] ?? true;
         $registerFields = (array) ($bundleConfig['register_fields'] ?? []);
