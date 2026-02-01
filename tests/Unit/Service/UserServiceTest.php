@@ -13,6 +13,7 @@ use Happycode\TenZeroAuth\Service\ConfigService;
 use Happycode\TenZeroAuth\Service\UserService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 final class UserServiceTest extends TestCase
 {
@@ -422,7 +423,7 @@ final class UserServiceTest extends TestCase
 
     private function usePasswordHasherMock(): UserPasswordHasherInterface
     {
-        $this->passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
+        $this->passwordHasher = $this->createMock(FakePasswordHasher::class);
 
         return $this->passwordHasher;
     }
@@ -461,5 +462,23 @@ final class FakeUser extends TenZeroUser
 
     public function eraseCredentials(): void
     {
+    }
+}
+
+class FakePasswordHasher implements UserPasswordHasherInterface
+{
+    public function hashPassword(PasswordAuthenticatedUserInterface $user, string $plainPassword): string
+    {
+        return '';
+    }
+
+    public function isPasswordValid(PasswordAuthenticatedUserInterface $user, string $plainPassword): bool
+    {
+        return false;
+    }
+
+    public function needsRehash(PasswordAuthenticatedUserInterface $user): bool
+    {
+        return false;
     }
 }

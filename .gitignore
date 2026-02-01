@@ -3,6 +3,9 @@ vendor/
 # JetBrains IDE settings
 .idea/
 
+# Local scripts
+bin/
+
 # PHPUnit cache
 .phpunit.cache/
 
