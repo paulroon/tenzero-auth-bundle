@@ -286,12 +286,8 @@ final class TenZeroAuthBundle extends AbstractBundle
                 static fn (array $rule): bool => ($rule['path'] ?? null) !== '^/_tz/register$'
             ));
         }
-        if (is_string($userClass) && '' !== $userClass) {
-            $builder->setParameter('happycode_tenzero_auth.user_class', $userClass);
-        }
-        if (is_string($userField) && '' !== $userField) {
-            $builder->setParameter('happycode_tenzero_auth.user_field', $userField);
-        }
+        $builder->setParameter('happycode_tenzero_auth.user_class', $userClass);
+        $builder->setParameter('happycode_tenzero_auth.user_field', $userField);
         if (is_string($theme) && '' !== $theme) {
             $builder->setParameter('happycode_tenzero_auth.theme', $theme);
         }
@@ -349,8 +345,8 @@ final class TenZeroAuthBundle extends AbstractBundle
             'providers' => [
                 'tenzero_user_provider' => [
                     'entity' => [
-                        'class' => $userClass ?? '',
-                        'property' => $userField ?? '',
+                        'class' => $userClass,
+                        'property' => $userField,
                     ],
                 ],
             ],
