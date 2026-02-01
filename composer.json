@@ -29,6 +29,7 @@
     "require-dev": {
         "php-cs-fixer/shim": "^3.93",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^12.5"
+        "phpunit/phpunit": "^12.5",
+        "doctrine/doctrine-bundle": "^3.2"
     }
 }
