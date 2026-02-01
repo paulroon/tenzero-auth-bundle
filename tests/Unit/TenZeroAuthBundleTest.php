@@ -32,7 +32,9 @@ final class TenZeroAuthBundleTest extends TestCase
 
         $bundle->loadExtension(['user_class' => \stdClass::class], $container, $builder);
 
-        $this->assertSame([], $builder->getDefinitions());
+        $definitions = $builder->getDefinitions();
+        unset($definitions['service_container']);
+        $this->assertSame([], $definitions);
         $this->assertFalse($builder->hasParameter('happycode_tenzero_auth.user_class'));
         $this->assertFalse($builder->hasParameter('happycode_tenzero_auth.user_field'));
     }
