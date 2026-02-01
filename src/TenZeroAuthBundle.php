@@ -158,6 +158,7 @@ final class TenZeroAuthBundle extends AbstractBundle
 
     private function stringNode(NodeBuilder $builder, string $name): ScalarNodeDefinition
     {
+        // @phpstan-ignore-next-line phpstan-ignore-next-line Symfony 6.4 NodeBuilder lacks stringNode at runtime.
         if (method_exists($builder, 'stringNode')) {
             return $builder->stringNode($name);
         }
