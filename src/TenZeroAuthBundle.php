@@ -6,6 +6,8 @@ namespace Happycode\TenZeroAuth;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
 use Happycode\TenZeroAuth\Model\TenZeroUser;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
+use Symfony\Component\Config\Definition\Builder\ScalarNodeDefinition;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,11 +29,11 @@ final class TenZeroAuthBundle extends AbstractBundle
 
     public function configure(DefinitionConfigurator $definition): void
     {
-        $definition->rootNode()
-            ->children()
+        $rootNode = $definition->rootNode();
+        $children = $rootNode->children();
 
                 // user_class
-                ->stringNode('user_class')
+        $this->stringNode($children, 'user_class')
                     ->info('The class that will be used to authenticate user.')
                     ->example('\App\Entity\User')
                     ->defaultNull()
@@ -43,48 +45,48 @@ final class TenZeroAuthBundle extends AbstractBundle
                         ->ifTrue(fn ($v) => is_string($v) && '' !== $v && !is_a($v, TenZeroUser::class, true))
                         ->thenInvalid('Configured user_class "%s" must extend Happycode\\TenZeroAuth\\Model\\TenZeroUser.')
                     ->end() // end user_class validate block
-                ->end() // end user_class block
+                ->end(); // end user_class block
 
                 // user_field
-                ->stringNode('user_field')
+        $this->stringNode($children, 'user_field')
                     ->info('The field that will be used to identify the user.')
                     ->example('username | email')
                     ->defaultNull()
-                ->end() // end user_field block
+                ->end(); // end user_field block
 
                 // theme
-                ->stringNode('theme')
+        $this->stringNode($children, 'theme')
                     ->info('Optional theme class applied to the auth layout body.')
                     ->defaultValue('tz-theme-default')
                     ->cannotBeEmpty()
-                ->end() // end theme block
+                ->end(); // end theme block
                 // enable_register
-                ->booleanNode('enable_register')
+        $children->booleanNode('enable_register')
                     ->info('Enable or disable the register route and UI.')
                     ->defaultTrue()
-                ->end() // end enable_register block
+                ->end(); // end enable_register block
                 // register_fields
-                ->arrayNode('register_fields')
+        $children->arrayNode('register_fields')
                     ->info('Explicit allowlist of user fields permitted during registration.')
                     ->scalarPrototype()->end()
                     ->defaultValue([])
-                ->end() // end register_fields block
+                ->end(); // end register_fields block
 
                 // app_name
-                ->stringNode('app_name')
+        $this->stringNode($children, 'app_name')
                     ->info('Optional app name displayed in the auth layout.')
                     ->defaultValue('TenZero')
                     ->cannotBeEmpty()
-                ->end() // end app_name block
+                ->end(); // end app_name block
 
                 // app_description
-                ->stringNode('app_description')
+        $this->stringNode($children, 'app_description')
                     ->info('Optional app description displayed in the auth layout.')
                     ->defaultValue('A comprehensive business management platform designed to streamline your operations and boost productivity.')
                     ->cannotBeEmpty()
-                ->end() // end app_description block
+                ->end(); // end app_description block
                 // access_control
-                ->arrayNode('access_control')
+        $children->arrayNode('access_control')
                     ->info('Access control rules, same structure as security.access_control. Overrides defaults by matching path or adds new rules.')
                     ->arrayPrototype()
                         ->children()
@@ -92,39 +94,39 @@ final class TenZeroAuthBundle extends AbstractBundle
                             ->variableNode('roles')->end()
                         ->end()
                     ->end()
-                ->end() // end access_control block
+                ->end(); // end access_control block
                 // login_redirect_url
-                ->stringNode('login_redirect_url')
+        $this->stringNode($children, 'login_redirect_url')
                     ->info('URL to redirect to after successful login.')
                     ->defaultValue('/')
                     ->cannotBeEmpty()
-                ->end() // end login_redirect_url block
+                ->end(); // end login_redirect_url block
                 // logout_redirect_url
-                ->stringNode('logout_redirect_url')
+        $this->stringNode($children, 'logout_redirect_url')
                     ->info('URL to redirect to after logout.')
                     ->defaultValue('/login')
                     ->cannotBeEmpty()
-                ->end() // end logout_redirect_url block
+                ->end(); // end logout_redirect_url block
                 // token_ttl
-                ->integerNode('token_ttl')
+        $children->integerNode('token_ttl')
                     ->info('JWT token lifetime in seconds.')
                     ->defaultValue(3600)
-                ->end() // end token_ttl block
+                ->end(); // end token_ttl block
                 // reset_password_link_ttl
-                ->integerNode('reset_password_link_ttl')
+        $children->integerNode('reset_password_link_ttl')
                     ->info('Reset password link lifetime in seconds.')
                     ->defaultValue(86400)
-                ->end() // end reset_password_link_ttl block
+                ->end(); // end reset_password_link_ttl block
                 // api_route_path
-                ->stringNode('api_route_path')
+        $this->stringNode($children, 'api_route_path')
                     ->info('Base API route path used for the API firewall (default: /api).')
                     ->defaultValue('/api')
                     ->cannotBeEmpty()
-                ->end() // end api_route_path block
+                ->end(); // end api_route_path block
 
-            ->end() // end root children
+        $children->end(); // end root children
 
-            ->validate() // Validate the whole block
+        $rootNode->validate() // Validate the whole block
                 ->ifTrue(static function (array $v): bool {
                     $userClass = $v['user_class'] ?? null;
                     $userField = $v['user_field'] ?? null;
@@ -151,6 +153,19 @@ final class TenZeroAuthBundle extends AbstractBundle
                     $getter = 'get'.ucfirst($userField);
                     throw new InvalidConfigurationException(sprintf('Configured user_field "%s" is not valid for user_class "%s". Add %s() or a "%s" property.', $userField, $userClass, $getter, $userField));
                 })
+            ->end();
+    }
+
+    private function stringNode(NodeBuilder $builder, string $name): ScalarNodeDefinition
+    {
+        if (method_exists($builder, 'stringNode')) {
+            return $builder->stringNode($name);
+        }
+
+        return $builder->scalarNode($name)
+            ->validate()
+                ->ifTrue(static fn ($v): bool => null !== $v && !is_string($v))
+                ->thenInvalid(sprintf('Configuration "%s" must be a string.', $name))
             ->end();
     }
 
