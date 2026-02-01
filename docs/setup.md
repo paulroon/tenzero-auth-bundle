@@ -1,7 +1,7 @@
 # Setup
 
 ## Requirements
-- PHP >= 8.1
+- PHP >= 8.4
 - Symfony 8.0+
 - Doctrine ORM (doctrine/orm)
 

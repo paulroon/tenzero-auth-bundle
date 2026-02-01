@@ -2,7 +2,7 @@
 
 TenZero Auth supports the following runtime versions:
 
-- PHP 8.1 or newer
+- PHP 8.4 or newer
 - Symfony 8.0 or newer
 - Doctrine ORM (doctrine/orm)
 
