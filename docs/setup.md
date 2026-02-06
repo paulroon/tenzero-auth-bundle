@@ -1,5 +1,7 @@
 # Setup
 
+[Back to README](../README.md)
+
 ## Requirements
 - PHP >= 8.4
 - Symfony 8.0+

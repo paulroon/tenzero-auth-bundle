@@ -1,5 +1,7 @@
 # Configuration
 
+[Back to README](../README.md)
+
 ## Bundle config (host app)
 
 ```yaml

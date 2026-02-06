@@ -1,5 +1,7 @@
 # User class
 
+[Back to README](../README.md)
+
 Create a User entity that extends the bundle base class and maps the identifier field.
 
 Example:

@@ -1,5 +1,7 @@
 # Events
 
+[Back to README](../README.md)
+
 ## Password reset requested
 When a reset is requested, the bundle dispatches `Happycode\TenZeroAuth\Event\PasswordResetRequestedEvent`.
 
