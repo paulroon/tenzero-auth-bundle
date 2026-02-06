@@ -12,6 +12,9 @@
 composer require happycode/tenzero-auth
 ```
 
+Note: If you want the Symfony Flex recipe from `recipes-contrib` to apply automatically,
+set `"extra.symfony.allow-contrib": true` in your host app's `composer.json`.
+
 2) Generate JWT keys (host app):
 
 ```bash
