@@ -422,9 +422,6 @@ final class TenZeroAuthBundle extends AbstractBundle
         ];
         $foundKeys = [];
         foreach ($configs as $config) {
-            if (!is_array($config)) {
-                continue;
-            }
             foreach ($forbiddenKeys as $key) {
                 if (array_key_exists($key, $config)) {
                     $foundKeys[$key] = true;
@@ -438,9 +435,6 @@ final class TenZeroAuthBundle extends AbstractBundle
             static fn (string $key): string => 'security.'.$key,
             array_keys($foundKeys)
         ));
-        throw new InvalidConfigurationException(sprintf(
-            'Remove %s from your app security config; TenZero Auth manages these internally.',
-            $foundList
-        ));
+        throw new InvalidConfigurationException(sprintf('Remove %s from your app security config; TenZero Auth manages these internally.', $foundList));
     }
 }
