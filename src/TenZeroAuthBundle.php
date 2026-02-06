@@ -366,43 +366,6 @@ final class TenZeroAuthBundle extends AbstractBundle
                     ],
                 ],
             ],
-            'firewalls' => [
-                'dev' => [
-                    'pattern' => '^/(_profiler|_wdt|assets|build)/',
-                    'security' => false,
-                ],
-                'api' => [
-                    'pattern' => $apiFirewallPattern,
-                    'stateless' => true,
-                    'provider' => 'tenzero_user_provider',
-                    'entry_point' => Security\JwtOrLoginEntryPoint::class,
-                    'json_login' => [
-                        'check_path' => $apiAuthTokenPath,
-                        'username_path' => '%happycode_tenzero_auth.user_field%',
-                        'password_path' => 'password',
-                        'success_handler' => 'lexik_jwt_authentication.handler.authentication_success',
-                        'failure_handler' => 'lexik_jwt_authentication.handler.authentication_failure',
-                    ],
-                    'jwt' => null,
-                ],
-                'web' => [
-                    'pattern' => '^/',
-                    'provider' => 'tenzero_user_provider',
-                    'form_login' => [
-                        'login_path' => '/_tz/login',
-                        'check_path' => '/_tz/login',
-                        'default_target_path' => '%happycode_tenzero_auth.login_redirect_url%',
-                        'username_parameter' => '%happycode_tenzero_auth.user_field%',
-                        'password_parameter' => 'password',
-                        'enable_csrf' => true,
-                        'csrf_token_id' => 'authenticate',
-                    ],
-                    'logout' => [
-                        'path' => '/_tz/logout',
-                        'target' => '%happycode_tenzero_auth.logout_redirect_url%',
-                    ],
-                ],
-            ],
             'access_control' => $accessControl,
         ]);
     }
