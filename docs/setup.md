@@ -12,7 +12,17 @@
 composer require happycode/tenzero-auth
 ```
 
-2) Generate JWT keys (host app):
+2) Remove any TenZero Auth security config from `config/packages/security.yaml` (host app).
+
+For this bundle to work, make sure the following keys are not defined:
+- `security.password_hashers`
+- `security.providers`
+- `security.firewalls`
+- `security.access_control`
+
+TenZero Auth injects these settings based on your `happycode_tenzero_auth` config.
+
+3) Generate JWT keys (host app):
 
 ```bash
 php bin/console lexik:jwt:generate-keypair
@@ -24,7 +34,7 @@ This creates:
 
 Make sure `config/jwt/private.pem` is not world-readable.
 
-3) Set environment variables (host app):
+4) Set environment variables (host app):
 
 ```env
 JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem

@@ -225,6 +225,7 @@ final class TenZeroAuthBundle extends AbstractBundle
         if (!is_string($userClass) || '' === $userClass || !is_string($userField) || '' === $userField) {
             return;
         }
+        $this->assertNoSecurityConfig($builder);
         $theme = $bundleConfig['theme'] ?? 'tz-theme-default';
         $enableRegister = $bundleConfig['enable_register'] ?? true;
         $registerFields = (array) ($bundleConfig['register_fields'] ?? []);
@@ -405,5 +406,41 @@ final class TenZeroAuthBundle extends AbstractBundle
             ],
             'access_control' => $accessControl,
         ]);
+    }
+
+    private function assertNoSecurityConfig(ContainerBuilder $builder): void
+    {
+        $configs = $builder->getExtensionConfig('security');
+        if (!$configs) {
+            return;
+        }
+        $forbiddenKeys = [
+            'password_hashers',
+            'providers',
+            'firewalls',
+            'access_control',
+        ];
+        $foundKeys = [];
+        foreach ($configs as $config) {
+            if (!is_array($config)) {
+                continue;
+            }
+            foreach ($forbiddenKeys as $key) {
+                if (array_key_exists($key, $config)) {
+                    $foundKeys[$key] = true;
+                }
+            }
+        }
+        if (!$foundKeys) {
+            return;
+        }
+        $foundList = implode(', ', array_map(
+            static fn (string $key): string => 'security.'.$key,
+            array_keys($foundKeys)
+        ));
+        throw new InvalidConfigurationException(sprintf(
+            'Remove %s from your app security config; TenZero Auth manages these internally.',
+            $foundList
+        ));
     }
 }

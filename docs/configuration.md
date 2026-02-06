@@ -65,6 +65,7 @@ happycode_tenzero_auth:
 See `docs/user-class.md` for the full example and guidance.
 
 ## Notes
+- Remove `security.password_hashers`, `security.providers`, `security.firewalls`, and `security.access_control` from the host app; TenZero Auth injects these settings.
 - `user_class` must extend `Happycode\TenZeroAuth\Model\TenZeroUser`.
 - `access_control` merges with defaults by matching `path`:
   - Same `path` overrides the default rule.
