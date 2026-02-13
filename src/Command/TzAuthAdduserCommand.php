@@ -59,7 +59,7 @@ class TzAuthAdduserCommand extends Command
 
         $user = new $userClass();
 
-        $setter = 'set' . ucfirst($userField);
+        $setter = 'set'.ucfirst($userField);
         if (method_exists($user, $setter)) {
             $user->{$setter}($username);
         } else {
@@ -72,7 +72,7 @@ class TzAuthAdduserCommand extends Command
             if (!is_string($field)) {
                 continue;
             }
-            $fieldSetter = 'set' . ucfirst($field);
+            $fieldSetter = 'set'.ucfirst($field);
             if (method_exists($user, $fieldSetter)) {
                 $user->{$fieldSetter}('');
             }
