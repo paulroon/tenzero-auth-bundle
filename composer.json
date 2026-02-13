@@ -1,6 +1,6 @@
 {
     "name": "happycode/tenzero-auth",
-    "description": "Some Auth",
+    "description": "Tenzero Auth bundle for Symfony",
     "type": "symfony-bundle",
     "license": "MIT",
     "autoload": {

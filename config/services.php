@@ -69,6 +69,10 @@ return static function (ContainerConfigurator $container): void {
     $services->set(TenZeroAuthRouteLoader::class)
         ->tag('routing.loader');
 
+    // Register console commands provided by this bundle
+    $services->load('Happycode\\TenZeroAuth\\Command\\', __DIR__.'/../src/Command/*')
+        ->private();
+
     // Register controllers in this bundle as services and bind scalar param for autowiring
     $services->load('Happycode\\TenZeroAuth\\Controller\\', __DIR__.'/../src/Controller/*')
         ->private();

@@ -37,3 +37,11 @@ JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
 JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
 JWT_PASSPHRASE=your-passphrase
 ```
+
+## Create a user
+
+Once you have configured `happycode_tenzero_auth.user_class` and `happycode_tenzero_auth.user_field` in the host app, the bundle exposes a console command to create users from the host app vendor install:
+
+```bash
+php bin/console tz:auth:adduser admin@example.com admin
+```
