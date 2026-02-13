@@ -32,6 +32,22 @@
         "phpunit/phpunit": "^12.5",
         "doctrine/doctrine-bundle": "^2.13 || ^3.0"
     },
+    "archive": {
+        "exclude": [
+            "/.github",
+            "/.idea",
+            "/.php-cs-fixer.cache",
+            "/.php-cs-fixer.dist.php",
+            "/.gitattributes",
+            "/.gitignore",
+            "/composer.lock",
+            "/docs",
+            "/phpstan.neon",
+            "/phpunit.xml",
+            "/tests",
+            "/vendor"
+        ]
+    },
     "config": {
         "audit": {
             "ignore": [
